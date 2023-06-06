@@ -113,7 +113,7 @@ class Symbol:
             self.digits = 0
 
     def __repr__(self):
-        return 'Symbol (%s | %s)' % (self.ticker, self.mode)
+        return f'Symbol ({self.ticker} | {self.mode})'
 
 
 class Indicator:
@@ -125,8 +125,7 @@ class Indicator:
         self.data = data or [0]
         self.type = tp or ChartType.LINE
         self.base = base or {'linewidth': 0.5, 'color': 'black'}
-        self.lineStyle = {'linestyle': '-', 'linewidth': 0.5, 'color': 'blue'}
-        self.lineStyle.update(kwargs)
+        self.lineStyle = {'linestyle': '-', 'linewidth': 0.5, 'color': 'blue'} | kwargs
 
 
 Quotes = BaseQuotes()

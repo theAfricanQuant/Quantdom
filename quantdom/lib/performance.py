@@ -175,7 +175,7 @@ class Performance:
 
     def _calc_trade_series(self, col, positions):
         win_in_series, loss_in_series = 0, 0
-        for i, p in enumerate(positions):
+        for p in positions:
             if p.profit >= 0:
                 win_in_series += 1
                 loss_in_series = 0

@@ -161,11 +161,10 @@ class AxisLabel(pg.GraphicsObject):
         if self.label_str:
             if not isinstance(self.bg_color, dict):
                 bg_color = self.bg_color
+            elif int(self.label_str.replace(' ', '')) > 0:
+                bg_color = self.bg_color['>0']
             else:
-                if int(self.label_str.replace(' ', '')) > 0:
-                    bg_color = self.bg_color['>0']
-                else:
-                    bg_color = self.bg_color['<0']
+                bg_color = self.bg_color['<0']
             p.setOpacity(self.opacity)
             p.fillRect(option.rect, bg_color)
             p.setOpacity(1)
@@ -304,14 +303,13 @@ class CrossHairItem(pg.GraphicsObject):
             else:
                 self.yaxis_label.show()
                 self.hline.show()
-        else:  # Leave
-            if ind:
-                self.indicators[ind]['hl'].hide()
-                self.indicators[ind]['yl'].hide()
-                self.activeIndicator = None
-            else:
-                self.yaxis_label.hide()
-                self.hline.hide()
+        elif ind:
+            self.indicators[ind]['hl'].hide()
+            self.indicators[ind]['yl'].hide()
+            self.activeIndicator = None
+        else:
+            self.yaxis_label.hide()
+            self.hline.hide()
 
     def mouseMoved(self, evt):  # noqa
         pos = evt[0]
@@ -586,7 +584,6 @@ class QuotesChart(QtGui.QWidget):
                     text=('Buy at {:.%df}' % self.digits).format(price),
                     valign=QtCore.Qt.AlignBottom,
                 )
-                text_sig.hide()
             else:
                 y = Quotes[x].high * 1.01
                 pg.ArrowItem(
@@ -606,8 +603,7 @@ class QuotesChart(QtGui.QWidget):
                     text=('Sell at {:.%df}' % self.digits).format(price),
                     valign=QtCore.Qt.AlignTop,
                 )
-                text_sig.hide()
-
+            text_sig.hide()
             self.signals_text_items[x] = text_sig
 
         self.chart.addItem(self.signals_group_arrow)

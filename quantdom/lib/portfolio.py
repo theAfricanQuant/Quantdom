@@ -287,12 +287,9 @@ class Position:
         volume = volume or self.volume
         factor = 1 if self.type == Order.BUY else -1
         price_delta = (close_price - self.open_price) * factor
-        if self.symbol.mode in [self.symbol.FOREX, self.symbol.CFD]:
+        if self.symbol.mode == self.symbol.FOREX:
             # Margin:  Lots*Contract_Size/Leverage
-            if (
-                self.symbol.mode == self.symbol.FOREX
-                and self.symbol.ticker[:3] == 'USD'
-            ):
+            if self.symbol.ticker[:3] == 'USD':
                 # Example: 'USD/JPY'
                 #          Прибыль       Размер   Объем     Текущий
                 #          в пунктах     пункта   позиции   курс
@@ -310,10 +307,7 @@ class Position:
                     / close_price
                     * volume
                 )
-            elif (
-                self.symbol.mode == self.symbol.FOREX
-                and self.symbol.ticker[-3:] == 'USD'
-            ):
+            elif self.symbol.ticker[-3:] == 'USD':
                 # Example: 'EUR/USD'
                 # Profit:      (close_price-open_price)*Contract_Size*Lots
                 # EUR/USD BUY: (1.05875-1.05850)*100000*1 = +$25 (без комиссии)
@@ -326,6 +320,14 @@ class Position:
                 # TODO: temporary patch (same as the previous choice) -
                 # in the future connect to some quotes provider and get rates
                 _profit = price_delta * self.symbol.contract_size * volume
+        elif self.symbol.mode == self.symbol.CFD:
+            # Cross rates. Example: 'GBP/CHF'
+            # Цена пункта =
+            # объем поз.*размер п.*тек.курс баз.вал. к USD/тек. кросс-курс
+            # GBP/CHF: 100000*0.0001*1.48140/1.48985 = $9.94
+            # TODO: temporary patch (same as the previous choice) -
+            # in the future connect to some quotes provider and get rates
+            _profit = price_delta * self.symbol.contract_size * volume
         elif self.symbol.mode == self.symbol.FUTURES:
             # Margin: Lots *InitialMargin*Percentage/100
             # Profit:          (close_price-open_price)*TickPrice/TickSize*Lots

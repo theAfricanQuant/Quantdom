@@ -89,7 +89,7 @@ class DataTabWidget(QtGui.QWidget):
         """Shares."""
         self.shares_tab = QtGui.QWidget()
         self.shares_layout = QtGui.QFormLayout(self.shares_tab)
-        today = datetime.today()
+        today = datetime.now()
 
         self.shares_date_from = QtGui.QDateEdit()
         self.shares_date_from.setMinimumDate(QtCore.QDate(1900, 1, 1))
@@ -168,7 +168,7 @@ class DataTabWidget(QtGui.QWidget):
             filter='All (*);;Text (*.txt)',
         )
 
-        self.import_data_label.setText('Loading %s' % filename)
+        self.import_data_label.setText(f'Loading {filename}')
 
         with open(filename, 'r', encoding='utf-8') as f:
             self.data = f.readlines()

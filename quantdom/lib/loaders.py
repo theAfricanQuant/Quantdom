@@ -127,10 +127,9 @@ class AlphaVantageQuotesLoader(QuotesLoader):
 
     @classmethod
     def _get(cls, symbol, date_from, date_to):
-        quotes = get_data_alphavantage(
+        return get_data_alphavantage(
             symbol, date_from, date_to, api_key=cls.api_key
         )
-        return quotes
 
 
 class StooqQuotesLoader(QuotesLoader):

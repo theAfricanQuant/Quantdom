@@ -27,10 +27,8 @@ class ResultsTable(QtGui.QTableWidget):
         super().__init__()
         self.setColumnCount(len(Portfolio.performance.columns))
         rows = sum(
-            [
-                2 if 'separated' in props else 1
-                for props in Portfolio.performance.rows.values()
-            ]
+            2 if 'separated' in props else 1
+            for props in Portfolio.performance.rows.values()
         )
         self.setRowCount(rows)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
@@ -58,7 +56,7 @@ class ResultsTable(QtGui.QTableWidget):
                 elif isinstance(val, (int, str)):
                     sval = '%d %s' % (val, units)
                 elif isinstance(val, datetime):
-                    sval = '%s %s' % (val.strftime('%Y.%m.%d'), units)
+                    sval = f"{val.strftime('%Y.%m.%d')} {units}"
                 item = QtGui.QTableWidgetItem(sval)
                 item.setTextAlignment(
                     QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
@@ -124,22 +122,22 @@ class TradesTable(QtGui.QTableWidget):
         for irow, trade in enumerate(trades):
             for icol, col in enumerate(self.cols[:, 1]):
                 fg_color = None
-                if col == 'type':
-                    val, fg_color = (
-                        ('▲ Buy', self.fg_positive_color)
-                        if trade[col] == Order.BUY
-                        else ('▼ Sell', self.fg_negative_color)
-                    )
-                elif col == 'status':
-                    val = 'Open' if trade[col] == Position.OPEN else 'Closed'
-                elif col == 'symbol':
-                    val = trade[col].ticker
-                elif col == 'bars':
+                if col == 'bars':
                     val = int(trade[col])
                 elif col == 'entry':
                     val = fromtimestamp(trade['open_time'])
                 elif col == 'exit':
                     val = fromtimestamp(trade['close_time'])
+                elif col == 'status':
+                    val = 'Open' if trade[col] == Position.OPEN else 'Closed'
+                elif col == 'symbol':
+                    val = trade[col].ticker
+                elif col == 'type':
+                    val, fg_color = (
+                        ('▲ Buy', self.fg_positive_color)
+                        if trade[col] == Order.BUY
+                        else ('▼ Sell', self.fg_negative_color)
+                    )
                 else:
                     val = trade[col]
 
@@ -154,7 +152,7 @@ class TradesTable(QtGui.QTableWidget):
                     )
                     # name = (trade['entry_name'] if col == 'entry' else
                     #         trade['exit_name'])
-                    s_val = '%s at $%s' % (time, price)
+                    s_val = f'{time} at ${price}'
                 elif isinstance(val, (int, str, np.int_, np.str_)):
                     s_val = str(val)
 
